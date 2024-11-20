@@ -4,8 +4,6 @@
     <h1 class="page-title">Budget Management</h1>
     
     <!-- Year and Month Input -->
-    <!-- 年份和月份输入 -->
-    <!-- 绑定月份，改变时调用 fetchReport 方法 -->
     <div class="filter-section">
       <div class="filter-item">
         <label for="year">Year:</label>
@@ -18,16 +16,13 @@
     </div>
 
     <!-- Report Table and Chart -->
-    <!-- 报表表格和图表 -->
     <div v-if="report" class="report-section">
       <!-- Chart Section -->
-      <!-- 图表区域 -->
       <div class="chart-container">
         <canvas id="budgetChart"></canvas>
       </div>
 
       <!-- Budget Table Section -->
-      <!-- 预算表格区域 -->
       <div class="table-container">
         <table>
           <thead>
@@ -47,9 +42,11 @@
               <td>{{ category.spent }}</td>
               <td>{{ category.budget - category.spent }}</td>
               <td>
-                <!-- 编辑和删除按钮 -->
-                <button @click="prepareEditBudget(index)" class="btn btn-edit">Edit</button>
-                <button @click="confirmDeleteBudget(index)" class="btn btn-delete">Delete</button>
+                <div class="button-actions">
+                  <!-- 编辑和删除按钮 -->
+                  <button @click="prepareEditBudget(index)" class="btn btn-edit">Edit</button>
+                  <button @click="confirmDeleteBudget(index)" class="btn btn-delete">Delete</button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -67,39 +64,17 @@
         <!-- 表单标题 -->
         <h2>{{ isEditing ? 'Update Budget' : 'Add Budget' }}</h2>
         <div class="form-container">
-          <!-- Align elements in one row -->
           <div class="form-row">
-            <!-- 类别选择框 -->
             <select v-model="currentCategory.name" class="form-select">
               <option v-for="category in availableCategories" :key="category" :value="category">
                 {{ category }}
               </option>
             </select>
-            <!-- 预算金额输入框 -->
             <input v-model="currentCategory.budget" type="number" placeholder="Budget Amount" class="form-input" />
-            
-            <!-- 操作按钮区域 -->
             <div class="action-buttons">
-              <button 
-                v-if="!isEditing"
-                @click="addBudget" 
-                class="btn btn-add">
-                Add Budget
-              </button>
-              
-              <button 
-                v-if="isEditing"
-                @click="updateBudget"
-                class="btn btn-update">
-                Update Budget
-              </button>
-              
-              <button 
-                v-if="isEditing"
-                @click="cancelEdit"
-                class="btn btn-cancel">
-                Cancel Edit
-              </button>
+              <button v-if="!isEditing" @click="addBudget" class="btn btn-add">Add Budget</button>
+              <button v-if="isEditing" @click="updateBudget" class="btn btn-update">Update Budget</button>
+              <button v-if="isEditing" @click="cancelEdit" class="btn btn-cancel">Cancel Edit</button>
             </div>
           </div>
         </div>
@@ -107,6 +82,7 @@
     </div>
   </div>
 </template>
+
 
 
 <script>
@@ -122,7 +98,7 @@ export default {
     // 可用的类别
     const availableCategories = ref([]);
     const year = ref(2024);
-    const month = ref(10);
+    const month = ref(11);
     const userId = localStorage.getItem('userId'); 
     // 当前编辑的类别数据
     const currentCategory = ref({ name: '', budget: 0 });
@@ -169,9 +145,12 @@ export default {
       availableCategories.value = parsedCategories.map(c => c.name);
     };
 
-    // 创建图表
-    const createChart = () => {
-      const ctx = document.getElementById('budgetChart').getContext('2d');
+// 创建图表
+const createChart = () => {
+  nextTick(() => {
+    const canvas = document.getElementById('budgetChart');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
       if (chartInstance) chartInstance.destroy();
 
       const categories = report.value.parsedCategories.map(category => category.name);
@@ -186,15 +165,15 @@ export default {
             {
               label: 'Budget Amount',
               data: budgetData,
-              backgroundColor: 'rgba(75, 192, 192, 0.6)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(0, 123, 255, 0.6)',
+              borderColor: 'rgba(0, 123, 255, 1)',
               borderWidth: 1,
             },
             {
               label: 'Actual Amount',
               data: spentData,
-              backgroundColor: 'rgba(255, 99, 132, 0.6)',
-              borderColor: 'rgba(255, 99, 132, 1)',
+              backgroundColor: 'rgba(40, 167, 69, 0.6)',
+              borderColor: 'rgba(40, 167, 69, 1)',
               borderWidth: 1,
             },
           ],
@@ -214,7 +193,11 @@ export default {
           },
         },
       });
-    };
+    } else {
+      console.error('Canvas element not found');
+    }
+  });
+};
 
    // 添加预算
     const addBudget = async () => {
@@ -237,6 +220,7 @@ export default {
       if (response.ok) {
         resetCurrentCategory();
         fetchReport();
+        alert('Budget added successfully!');  // 添加成功提示
       } else {
         console.error('Failed to add budget');
       }
@@ -263,6 +247,7 @@ export default {
       if (response.ok) {
         resetCurrentCategory();
         fetchReport();
+        alert('Budget updated successfully!');  // 更新成功提示
       } else {
         console.error('Failed to update budget');
       }
@@ -329,22 +314,23 @@ export default {
 .container {
   max-width: 1200px; 
   margin: 0 auto;
-  padding: 30px;
-  background-color: #f4f4f9;
+  padding: 20px;
+  background-color: #f8f8f8;
 }
 
 .page-title {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 1.5rem; /* Adjusted font size */
   color: #333;
-  margin-bottom: 20px;
+   margin-top: 5px;  /* 调整顶部的外边距，减少间距 */
+  margin-bottom: 10px;
 }
 
 .filter-section {
   display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center;     /* 垂直居中 */
-  margin-bottom: 30px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Reduced margin */
 }
 
 .filter-item label {
@@ -353,8 +339,8 @@ export default {
 }
 
 .filter-item input {
-  padding: 10px;
-  font-size: 1rem;
+  padding: 8px; /* Reduced padding */
+  font-size: 0.9rem; /* Adjusted font size */
   border: 1px solid #ddd;
   border-radius: 5px;
 }
@@ -365,8 +351,8 @@ export default {
 }
 
 .chart-container {
-  height: 400px;
-  margin-bottom: 30px;
+  height: 300px; /* Reduced height */
+  margin-bottom: 20px;
 }
 
 .table-container {
@@ -374,17 +360,18 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 30px;
+  padding: 15px; /* Reduced padding */
+  margin-bottom: 15px; /* Reduced margin */
 }
 
 .table-container table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9rem; /* Adjusted font size */
 }
 
 .table-container th, .table-container td {
-  padding: 12px 15px;
+  padding: 8px 10px; /* Reduced padding */
   text-align: center;
 }
 
@@ -393,9 +380,8 @@ export default {
   color: #333;
 }
 
-
 .table-container td {
-  font-size: 1rem;
+  font-size: 0.9rem; /* Adjusted font size */
 }
 
   th, td {
@@ -404,15 +390,24 @@ export default {
     text-align: left; /* 让文本左对齐 */
   }
 
+
 .table-container td button {
-  padding: 8px 12px;
-  margin: 5px;
+  padding: 6px 10px; /* Reduced padding */
+  margin: 0px;
   border-radius: 5px;
   cursor: pointer;
 }
 
+/* Edit and Delete buttons inline */
+.button-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px; /* Add space between buttons */
+}
+
+
 .btn-edit {
-  background-color: #ffa500;
+  background-color: #808080;
   color: white;
   border: none;
 }
@@ -423,50 +418,35 @@ export default {
   border: none;
 }
 
-.form-container {
-  margin-top: 20px;
-}
-
 .form-row {
   display: flex;
-  justify-content: space-between; /* Align elements horizontally */
-  gap: 15px; /* Space between the form elements */
   align-items: center;
+  gap: 10px; /* Adjusted spacing */
 }
 
 .form-select, .form-input {
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  width: 50%; /* Set a smaller width, adjust as needed */
+  padding: 6px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
-.form-select {
-  width: 200px;
+.action-buttons {
+  display: flex;
+  gap: 2px; 
+  align-items: center; /* 确保按钮垂直居中 */
+  justify-content: flex-start; /* 按钮从左对齐 */
 }
 
-.form-input {
-  width: 250px;
+
+.btn-add, .btn-update, .btn-cancel {
+  padding: 5px 10px;
+  font-size: 0.8rem; /* Adjusted font size */
+  background-color: #28a745; /* Green color */
+  color: white;   
 }
 
-.action-buttons button {
-  padding: 10px 20px;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
 
-.btn-add {
-  background-color: #4caf50;
-}
 
-.btn-update {
-  background-color: #2196f3;
-}
-
-.btn-cancel {
-  background-color: #9e9e9e;
-}
 </style>

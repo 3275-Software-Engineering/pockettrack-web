@@ -1,32 +1,41 @@
 <template>
   <div class="registration-container">
-    <h1>Register</h1>
-    <form @submit.prevent="handleRegister">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input v-model="username" id="username" placeholder="Username" required />
-      </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input v-model="email" id="email" placeholder="Email" required />
-      </div>
-      <div class="form-group">
-        <label for="phone">Phone:</label>
-        <input v-model="phone" id="phone" placeholder="Phone" required />
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" v-model="password" id="password" placeholder="Password" required />
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" v-model="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required />
-      </div>
-      <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <router-link to="/login">Login here</router-link></p> <!-- Changed to point to login page -->
+    <div class="registration-card">
+      <h1 class="title">Create an Account</h1>
+      <form @submit.prevent="handleRegister">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input v-model="username" id="username" type="text" placeholder="Enter your username" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input v-model="email" id="email" type="email" placeholder="Enter your email" required />
+        </div>
+       <div class="form-group">
+          <label for="phone">Phone</label>
+          <input v-model="phone" id="phone" type="tel" placeholder="Enter your phone number" required />
+       </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input v-model="password" id="password" type="password" placeholder="Create a password" required />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input v-model="confirmPassword" id="confirmPassword" type="password" placeholder="Confirm your password" required />
+        </div>
+        <button type="submit" class="btn-submit">Register</button>
+      </form>
+      <p class="link-text">
+        Already have an account? <router-link to="/login" class="link">Login here</router-link>
+      </p>
+      <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    </div>
   </div>
 </template>
+
+
 
 <script>
 export default {
@@ -36,13 +45,19 @@ export default {
       email: '',
       phone: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      successMessage: '',
+      errorMessage: ''
     };
   },
   methods: {
     async handleRegister() {
+      // Clear previous messages
+      this.successMessage = '';
+      this.errorMessage = '';
+
       if (this.password !== this.confirmPassword) {
-        alert('Passwords do not match');
+        this.errorMessage = 'Passwords do not match';
         return;
       }
 
@@ -61,59 +76,119 @@ export default {
         });
 
         if (response.ok) {
-          console.log('Registration successful');
-          this.$router.push({ name: 'Login' });
+          this.successMessage = 'Registration successful! Redirecting to login...';
+          setTimeout(() => {
+            this.$router.push({ name: 'Login' });
+          }, 2000); // Redirect after 2 seconds
         } else {
           const errorData = await response.json();
-          console.error('Registration failed:', errorData);
-          alert('Registration failed: ' + errorData.message);
+          this.errorMessage = errorData.message || 'Registration failed. Please try again.';
         }
       } catch (error) {
+        this.errorMessage = 'An error occurred during registration. Please try again later.';
         console.error('Error during registration:', error);
       }
     }
   }
 };
+
 </script>
 
 <style>
 .registration-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 400px; /* Adjust width as needed */
-  margin: 0 auto; /* Center the form */
+  height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.registration-card {
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .form-group {
-  display: flex; /* Use flex to align items horizontally */
-  align-items: center; /* Center align the label and input */
-  margin-bottom: 15px; /* Add space between fields */
-  width: 100%; /* Make the form groups full width */
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
-  flex: 0 0 120px; /* Set a fixed width for the labels */
-  margin-right: 10px; /* Add space between label and input */
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-align: center; /* 字体居中 */
+  color: #555;
 }
 
 input {
-  flex: 1; /* Allow input to take remaining space */
-  padding: 10px; /* Add padding for comfort */
-  border: 1px solid #ccc; /* Add border */
-  border-radius: 4px; /* Rounded corners */
-}
-
-button {
   padding: 10px;
-  background-color: #28a745; /* Green background */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #218838; /* Darker green on hover */
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+  background-color: #0056b3;
+}
+
+.link-text {
+  text-align: center;
+  margin-top: 15px;
+  color: #666;
+}
+
+.link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.success-message {
+  color: #28a745;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin-top: 15px;
 }
 </style>
+

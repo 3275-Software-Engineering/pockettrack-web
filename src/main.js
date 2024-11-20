@@ -7,6 +7,7 @@ import 'element-plus/dist/index.css';
 import LoginComponent from '@/components/LoginComponent.vue'; // 更新为新名称
 import RegisterComponent from '@/components/RegisterComponent.vue'; // 更新为新名称
 import BudgetReportComponent from '@/components/BudgetReportComponent.vue'; // 更新为新名称
+import TransactionComponent from '@/components/TransactionComponent.vue'; 
 import '@/assets/css/global.css'
 import '@/assets/css/iconfont/iconfont.css'
 import '@/assets/css/theme/index.css'
@@ -17,4 +18,5 @@ createApp(App)
     .component('LoginComponent', LoginComponent)
     .component('RegisterComponent', RegisterComponent)
     .component('BudgetReportComponent', BudgetReportComponent)
+    .component('TransactionComponent', TransactionComponent)
     .mount('#app');

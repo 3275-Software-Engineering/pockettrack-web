@@ -5,6 +5,7 @@ import RegisterComponent from '@/components/RegisterComponent.vue';
 import BudgetPage from '@/components/BudgetReportComponent.vue'; // Import your BudgetPage component
 import Home from "../components/HomeView.vue";  // Home 组件是布局容器
 import Dashboard from "../components/DashboardCharts";
+import TransactionComponent from '@/components/TransactionComponent.vue'; 
 
 // Judge login or not
 const routes = [
@@ -33,11 +34,11 @@ const routes = [
         name: 'Dashboard',
         component: Dashboard,
       },
-      // {
-      //     path: 'transactions',  // /home/transactions
-      //     name: 'Transactions',
-      //     component: Transactions,
-      // },
+      {
+        path: 'transaction',
+        name: 'Transaction',
+        component: TransactionComponent, 
+      },
       // {
       //     path: 'savingGoals',  // /home/savingGoals
       //     name: 'SavingGoals',

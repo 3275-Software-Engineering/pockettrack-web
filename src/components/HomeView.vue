@@ -24,7 +24,7 @@
               <span>Dashboard</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="/home/transactions" >
+          <el-menu-item index="/home/transaction" >
             <template #default>
               <i class="el-icon-money"></i>
               <span>Transactions</span>

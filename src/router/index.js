@@ -39,11 +39,11 @@ const routes = [
         name: 'Transaction',
         component: TransactionComponent, 
       },
-      // {
-      //     path: 'savingGoals',  // /home/savingGoals
-      //     name: 'SavingGoals',
-      //     component: SavingGoals,
-      // },
+      {
+           path: 'savingGoals',  // /home/savingGoals
+           name: 'SavingGoals',
+           component: SavingGoals,
+       },
        {
            path: 'budget',  // /home/budgets
            name: 'Budget',

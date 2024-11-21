@@ -8,6 +8,8 @@ import LoginComponent from '@/components/LoginComponent.vue'; // 更新为新名
 import RegisterComponent from '@/components/RegisterComponent.vue'; // 更新为新名称
 import BudgetReportComponent from '@/components/BudgetReportComponent.vue'; // 更新为新名称
 import TransactionComponent from '@/components/TransactionComponent.vue'; 
+import SavingGoalsComponent from './components/SavingGoalsComponent.vue';
+
 import '@/assets/css/global.css'
 import '@/assets/css/iconfont/iconfont.css'
 import '@/assets/css/theme/index.css'
@@ -19,4 +21,5 @@ createApp(App)
     .component('RegisterComponent', RegisterComponent)
     .component('BudgetReportComponent', BudgetReportComponent)
     .component('TransactionComponent', TransactionComponent)
+    .component('SavingGoalsComponent', SavingGoalsComponent)
     .mount('#app');

@@ -6,6 +6,7 @@ import BudgetPage from '@/components/BudgetReportComponent.vue'; // Import your 
 import Home from "../components/HomeView.vue";  // Home 组件是布局容器
 import Dashboard from "../components/DashboardCharts";
 import TransactionComponent from '@/components/TransactionComponent.vue'; 
+import SavingGoalsComponent from '@/components/SavingGoalsComponent.vue'
 
 // Judge login or not
 const routes = [
@@ -42,7 +43,7 @@ const routes = [
       {
            path: 'savingGoals',  // /home/savingGoals
            name: 'SavingGoals',
-           component: SavingGoals,
+           component: SavingGoalsComponent,
        },
        {
            path: 'budget',  // /home/budgets

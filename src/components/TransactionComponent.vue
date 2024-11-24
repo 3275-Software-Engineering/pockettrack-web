@@ -334,12 +334,17 @@
         }
       },
       deleteRecord() {
-        if (this.selectedRecord) {
-          this.records = this.records.filter(record => record !== this.selectedRecord);
-          //this.selectedRecord;
-          this.deleteTransaction();
-        }
-      },
+  if (!this.selectedRecord) {
+    alert('No record selected.');
+    return;
+  }
+  
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    this.deleteTransaction(); // 调用集中逻辑
+  } else {
+    alert('Deletion canceled.');
+  }
+},
       addTransaction() {
         console.log('Data being sent:', this.newRecord); 
         // Create a new transaction by sending a POST request to the server
@@ -368,7 +373,7 @@
     .then(response => {
       console.log('Transaction updated successfully', response.data);
       
-      // 更新本地 records 数组
+      // update backend
       const index = this.records.findIndex(record => record.id === this.selectedRecord.id);
       if (index !== -1) {
         this.records.splice(index, 1, response.data);
@@ -388,24 +393,21 @@
       return;
     }
   
-    // 确认删除操作，避免误操作
-    if (!confirm('Are you sure you want to delete this transaction?')) {
-      return;
-    }
-  
-    axios.delete(`http://localhost:8080/api/transactions/${this.selectedRecord.transactionId}`)
+    
+        axios.delete(`http://localhost:8080/api/transactions/${this.selectedRecord.transactionId}`)
       .then(response => {
         console.log('Transaction deleted successfully', response.data);
   
-        // 从本地 records 数组中移除已删除的记录
+        // delete record from backend
         this.records = this.records.filter(record => record.transactionId !== this.selectedRecord.transactionId);
   
-        // 清除选中的记录
+        // clear selected record
         this.selectedRecord = null;
       })
       .catch(error => {
         console.error('There was an error deleting the transaction:', error);
       });
+    
   }
   
   

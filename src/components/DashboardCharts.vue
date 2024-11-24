@@ -96,10 +96,15 @@ export default {
               this.dashboardData = response.data;
               console.log(this.dashboardData);
 
-              // 提取日期键、去重、排序
-              this.dates = Object.keys(this.dashboardData.incomeByMonth)
-                  .filter((value, index, self) => self.indexOf(value) === index) // 去重（保险起见，通常 Object.keys() 本身不含重复值）
+              // 合并日期值
+              this.dates = [
+                ...new Set([
+                  ...Object.keys(this.dashboardData.incomeByMonth),
+                  ...Object.keys(this.dashboardData.expenseByMonth)
+                ])
+              ]
                   .sort((a, b) => new Date(a) - new Date(b)); // 按日期升序排序
+              
               // 更新图表配置
               this.updateCharts(lineChart, barChart, pieChart);
 
